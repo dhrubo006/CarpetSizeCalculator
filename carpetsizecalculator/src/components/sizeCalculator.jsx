@@ -40,44 +40,44 @@ function SizeCalculator() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>Carpet Size Calculator</h1>
       {rooms.map((room, index) => (
-        <div key={index} className={styles.room}>
-          <div className={styles.roomInputRow}>
+        <div key={index} className="room">
+          <div className="roomInputRow">
             <input
               type="number"
               placeholder="Length"
               value={room.length}
               onChange={(e) => handleChange(index, "length", e.target.value)}
-              className={styles.input}
+              className="input"
             />
             <input
               type="number"
               placeholder="Width"
               value={room.width}
               onChange={(e) => handleChange(index, "width", e.target.value)}
-              className={styles.input}
+              className="input"
             />
             <button
               onClick={() => addInnerRoom(index)}
-              className={styles.addButton}
+              className="addButton"
             >
               ➕
             </button>
           </div>
           <button
             onClick={() => addRoom()}
-            className={styles.addRoomButton}
+            className="addRoomButton"
           >
             ➕ Add New Room
           </button>
           {room.innerRooms.length > 0 && (
-            <div className={styles.innerRooms}>
+            <div className="innerRooms">
               <h4>Inner Rooms</h4>
               {room.innerRooms.map((innerRoom, innerIndex) => (
                 <div key={innerIndex} className={styles.room}>
-                  <div className={styles.roomInputRow}>
+                  <div className="roomInputRow">
                     <input
                       type="number"
                       placeholder="Length"
@@ -85,7 +85,7 @@ function SizeCalculator() {
                       onChange={(e) =>
                         handleChange(index, "length", e.target.value, innerIndex)
                       }
-                      className={styles.input}
+                      className="input"
                     />
                     <input
                       type="number"
@@ -94,11 +94,11 @@ function SizeCalculator() {
                       onChange={(e) =>
                         handleChange(index, "width", e.target.value, innerIndex)
                       }
-                      className={styles.input}
+                      className="input"
                     />
                     <button
                       onClick={() => addInnerRoom(innerIndex)}
-                      className={styles.addButton}
+                      className="addButton"
                     >
                       ➕
                     </button>
@@ -110,10 +110,10 @@ function SizeCalculator() {
                     ➕ Add Inner Room
                   </button>
                   {innerRoom.innerRooms.length > 0 && (
-                    <div className={styles.innerRooms}>
+                    <div className="innerRooms">
                       {innerRoom.innerRooms.map((innerInnerRoom, innerInnerIndex) => (
-                        <div key={innerInnerIndex} className={styles.room}>
-                          <div className={styles.roomInputRow}>
+                        <div key={innerInnerIndex} className="room">
+                          <div className="roomInputRow">
                             <input
                               type="number"
                               placeholder="Length"
@@ -121,7 +121,7 @@ function SizeCalculator() {
                               onChange={(e) =>
                                 handleChange(index, "length", e.target.value, innerInnerIndex, innerIndex)
                               }
-                              className={styles.input}
+                              className="input"
                             />
                             <input
                               type="number"
@@ -130,11 +130,11 @@ function SizeCalculator() {
                               onChange={(e) =>
                                 handleChange(index, "width", e.target.value, innerInnerIndex, innerIndex)
                               }
-                              className={styles.input}
+                              className="input"
                             />
                             <button
                               onClick={() => addInnerRoom(innerInnerIndex)}
-                              className={styles.addButton}
+                              className="addButton"
                             >
                               ➕
                             </button>
@@ -149,11 +149,11 @@ function SizeCalculator() {
           )}
         </div>
       ))}
-      <button onClick={calculate} className={styles.calculateButton}>
+      <button onClick={calculate} className="calculateButton">
         Calculate
       </button>
       {totalArea !== null && (
-        <div className={styles.result}>
+        <div className="result">
           Total Carpet Area: {totalArea} sq units
         </div>
       )}
