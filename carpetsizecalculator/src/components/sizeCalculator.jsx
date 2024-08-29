@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./SizeCalculator.css";
+import "./SizeCalculator.css"; // Assuming your CSS is correctly imported
 
 function SizeCalculator() {
   const [rooms, setRooms] = useState([{ length: "", width: "", innerRooms: [] }]);
@@ -9,22 +9,26 @@ function SizeCalculator() {
     setRooms([...rooms, { length: "", width: "", innerRooms: [] }]);
   };
 
-  const addInnerRoom = (roomIndex) => {
-    const newRooms = [...rooms];
-    newRooms[roomIndex].innerRooms.push({ length: "", width: "", innerRooms: [] });
-    setRooms(newRooms);
+  const addInnerRoom = (parentIndex) => {
+    const updatedRooms = rooms.map((room, index) => {
+      if (index === parentIndex) {
+        return { ...room, innerRooms: [...room.innerRooms, { length: "", width: "", innerRooms: [] }] };
+      }
+      return room;
+    });
+    setRooms(updatedRooms);
   };
 
   const handleChange = (roomIndex, field, value, innerRoomIndex = null, innerParentRoomIndex = null) => {
-    const newRooms = [...rooms];
+    const updatedRooms = [...rooms];
     if (innerParentRoomIndex !== null) {
-      newRooms[roomIndex].innerRooms[innerParentRoomIndex].innerRooms[innerRoomIndex][field] = value;
+      updatedRooms[roomIndex].innerRooms[innerParentRoomIndex].innerRooms[innerRoomIndex][field] = value;
     } else if (innerRoomIndex !== null) {
-      newRooms[roomIndex].innerRooms[innerRoomIndex][field] = value;
+      updatedRooms[roomIndex].innerRooms[innerRoomIndex][field] = value;
     } else {
-      newRooms[roomIndex][field] = value;
+      updatedRooms[roomIndex][field] = value;
     }
-    setRooms(newRooms);
+    setRooms(updatedRooms);
   };
 
   const calculate = async () => {
@@ -39,11 +43,47 @@ function SizeCalculator() {
     setTotalArea(data.total_area);
   };
 
+  const renderInnerRooms = (innerRooms, parentIndex, roomNumber) => {
+    return innerRooms.map((innerRoom, innerIndex) => (
+      <div key={innerIndex} className="room">
+        <h4>Inner Room {`${roomNumber}.${innerIndex + 1}`}</h4>
+        <div className="roomInputRow">
+          <input
+            type="number"
+            placeholder="Length"
+            value={innerRoom.length}
+            onChange={(e) => handleChange(parentIndex, "length", e.target.value, innerIndex)}
+            className="input"
+          />
+          <input
+            type="number"
+            placeholder="Width"
+            value={innerRoom.width}
+            onChange={(e) => handleChange(parentIndex, "width", e.target.value, innerIndex)}
+            className="input"
+          />
+          <button onClick={() => addInnerRoom(innerIndex)} className="addButton">
+            ➕
+          </button>
+        </div>
+        <button onClick={() => addInnerRoom(parentIndex)} className="addRoomButton">
+          ➕ Add Inner Room
+        </button>
+        {innerRoom.innerRooms.length > 0 && (
+          <div className="innerRooms">
+            {renderInnerRooms(innerRoom.innerRooms, parentIndex, `${roomNumber}.${innerIndex + 1}`)}
+          </div>
+        )}
+      </div>
+    ));
+  };
+
   return (
     <div className="container">
       <h1>Carpet Size Calculator</h1>
       {rooms.map((room, index) => (
         <div key={index} className="room">
+          <h3>Room {index + 1}</h3>
           <div className="roomInputRow">
             <input
               type="number"
@@ -59,92 +99,16 @@ function SizeCalculator() {
               onChange={(e) => handleChange(index, "width", e.target.value)}
               className="input"
             />
-            <button
-              onClick={() => addInnerRoom(index)}
-              className="addButton"
-            >
+            <button onClick={() => addInnerRoom(index)} className="addButton">
               ➕
             </button>
           </div>
-          <button
-            onClick={() => addRoom()}
-            className="addRoomButton"
-          >
+          <button onClick={addRoom} className="addRoomButton">
             ➕ Add New Room
           </button>
           {room.innerRooms.length > 0 && (
             <div className="innerRooms">
-              <h4>Inner Rooms</h4>
-              {room.innerRooms.map((innerRoom, innerIndex) => (
-                <div key={innerIndex} className={styles.room}>
-                  <div className="roomInputRow">
-                    <input
-                      type="number"
-                      placeholder="Length"
-                      value={innerRoom.length}
-                      onChange={(e) =>
-                        handleChange(index, "length", e.target.value, innerIndex)
-                      }
-                      className="input"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Width"
-                      value={innerRoom.width}
-                      onChange={(e) =>
-                        handleChange(index, "width", e.target.value, innerIndex)
-                      }
-                      className="input"
-                    />
-                    <button
-                      onClick={() => addInnerRoom(innerIndex)}
-                      className="addButton"
-                    >
-                      ➕
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => addInnerRoom(index)}
-                    className={styles.addRoomButton}
-                  >
-                    ➕ Add Inner Room
-                  </button>
-                  {innerRoom.innerRooms.length > 0 && (
-                    <div className="innerRooms">
-                      {innerRoom.innerRooms.map((innerInnerRoom, innerInnerIndex) => (
-                        <div key={innerInnerIndex} className="room">
-                          <div className="roomInputRow">
-                            <input
-                              type="number"
-                              placeholder="Length"
-                              value={innerInnerRoom.length}
-                              onChange={(e) =>
-                                handleChange(index, "length", e.target.value, innerInnerIndex, innerIndex)
-                              }
-                              className="input"
-                            />
-                            <input
-                              type="number"
-                              placeholder="Width"
-                              value={innerInnerRoom.width}
-                              onChange={(e) =>
-                                handleChange(index, "width", e.target.value, innerInnerIndex, innerIndex)
-                              }
-                              className="input"
-                            />
-                            <button
-                              onClick={() => addInnerRoom(innerInnerIndex)}
-                              className="addButton"
-                            >
-                              ➕
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+              {renderInnerRooms(room.innerRooms, index, index + 1)}
             </div>
           )}
         </div>
