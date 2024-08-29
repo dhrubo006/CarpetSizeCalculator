@@ -9,15 +9,20 @@ function SizeCalculator() {
     setRooms([...rooms, { length: "", width: "", innerRooms: [] }]);
   };
 
-  const addInnerRoom = (parentIndex) => {
-    const updatedRooms = rooms.map((room, index) => {
-      if (index === parentIndex) {
-        return { ...room, innerRooms: [...room.innerRooms, { length: "", width: "", innerRooms: [] }] };
-      }
-      return room;
-    });
+  const addInnerRoom = (parentIndex, innerRoomIndex = null) => {
+    const updatedRooms = [...rooms];
+  
+    if (innerRoomIndex === null) {
+      // Add a new inner room to the main room (like 1.1)
+      updatedRooms[parentIndex].innerRooms.push({ length: "", width: "", innerRooms: [] });
+    } else {
+      // Add a new inner room inside an existing inner room (like 1.1.1)
+      updatedRooms[parentIndex].innerRooms[innerRoomIndex].innerRooms.push({ length: "", width: "", innerRooms: [] });
+    }
+  
     setRooms(updatedRooms);
   };
+  
 
   const handleChange = (roomIndex, field, value, innerRoomIndex = null, innerParentRoomIndex = null) => {
     const updatedRooms = [...rooms];
@@ -62,7 +67,7 @@ function SizeCalculator() {
             onChange={(e) => handleChange(parentIndex, "width", e.target.value, innerIndex)}
             className="input"
           />
-          <button onClick={() => addInnerRoom(innerIndex)} className="addButton">
+          <button onClick={() => addInnerRoom(parentIndex, innerIndex)} className="addButton">
             ➕
           </button>
         </div>
