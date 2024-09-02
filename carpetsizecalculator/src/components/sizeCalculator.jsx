@@ -48,6 +48,29 @@ function SizeCalculator() {
     setTotalArea(data.total_area);
   };
 
+
+
+  const downloadResult = async () => {
+    const response = await fetch("http://localhost:8000/download", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ rooms }),
+    });
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "carpet_area_result.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+
   const renderInnerRooms = (innerRooms, parentIndex, roomNumber) => {
     return innerRooms.map((innerRoom, innerIndex) => (
       <div key={innerIndex} className="room">
@@ -123,7 +146,10 @@ function SizeCalculator() {
       </button>
       {totalArea !== null && (
         <div className="result">
-          Total Carpet Area: {totalArea} sq units
+          Total Carpet Area: {totalArea} sq units  
+          <button onClick={downloadResult} className="downloadButton">
+            📥 Download Result
+          </button>
         </div>
       )}
     </div>
